@@ -220,17 +220,11 @@ class Tracker(object):
         method_stats = defaultdict(float)
         goal_stats = defaultdict(lambda : defaultdict(float))
         discourseAct_stats = defaultdict(float)
-        prev_method = "none"
-        
-        if len(hyps["method-label"].keys())> 0 :
-            prev_method = hyps["method-label"].keys()[0]
         for score, uact in slu_hyps :
             informed_goals, denied_goals, requested, method, discourseAct, self.lastInformedVenue = labels(uact, mact, self.lastInformedVenue)
             # requested
             for slot in requested:
                 requested_slot_stats[slot] += score
-            if method == "none" :
-                method = prev_method
             if method != "none" :
                 method_stats[method] += score
             # goal_labels
@@ -300,18 +294,23 @@ class FocusTracker(object):
         else :
             mact = []
         slu_hyps = Uacts(turn)
-       
+        
         this_u = defaultdict(lambda : defaultdict(float))
         method_stats = defaultdict(float)
         requested_slot_stats = defaultdict(float)
         discourseAct_stats = defaultdict(float)
+	prev_method  = "none"
+        
+        if len(hyps["method-label"].keys())> 0 :
+            prev_method = hyps["method-label"].keys()[0]
         for score, uact in slu_hyps :
             informed_goals, denied_goals, requested, method, discourseAct, self.lastInformedVenue = labels(uact, mact, self.lastInformedVenue)
             
             # goal_labels
             for slot in informed_goals:
                 this_u[slot][informed_goals[slot]] += score
-            
+            if method == "none" :
+                method = prev_method
             # methods
             method_stats[method] += score
             
@@ -352,25 +351,17 @@ class FocusTracker(object):
 
         # --- 2. method --- #
         method_label = hyps["method-label"]
-
-        # your code here, modify the following update rule
-	if "none" not in method_label :
+        if "none" not in method_label :
             method_label["none"] = max(0.0, 1.0-sum(method_label[value] for value in method_label))
-	q = method_label["none"]
+        # your code here, modify the following update rule
 	for method in method_stats:
             if method not in method_label:
                 method_label[method] = 0.0
-
-	    if method == "none":
-		q = 0
-		print method_stats[method]
-
-	    method_label[method] = q*method_label[method]+method_stats[method]
- 	
+	    if method != "none":
+	    	method_label[method] = method_stats["none"]*method_label[method]+method_stats[method]
         # normalise the score
         hyps["method-label"] = normalise_dict(method_label)
         # -------------- #
-       
 
         # --- 3. requested slots --- #
         informed_slots = []
@@ -386,7 +377,6 @@ class FocusTracker(object):
 		#update if machine action at turn t is not informed
 		if slot not in informed_slots:
             		p = hyps["requested-slots"][slot] + p
-	    
 
             # clip the score
             hyps["requested-slots"][slot] = clip(p)

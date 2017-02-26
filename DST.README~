@@ -35,7 +35,9 @@ This will create a file baseline.json with a tracker output object.
 
 - The evaluation script, score.py can be run on the tracker output as:
 
+python scripts/baseline.py --dataset dstc2_data --dataroot data --trackfile baseline.json --focus True
 python scripts/score.py --dataset dstc2_data --dataroot data --trackfile baseline.json --ontology scripts/config/ontology_dstc2.json --scorefile baseline.score.csv
+python scripts/report.py --scorefile baseline.score.csv
 
 This creates a file baseline.score.csv which lists all the metrics interested.
 
@@ -48,13 +50,14 @@ python scripts/report.py --scorefile baseline.score.csv
 This prints out several tables, including the featured metrics table. 
 The following table is the result of baseline tracker.
 
-                                    featured metrics
+
+  featured metrics
 --------------------------------------------------------------------
               |   Joint Goals   |    Requested    |      Method    |
 --------------------------------------------------------------------
-Accuracy      |    0.5686546    |    0.9162437    |    0.8529820   |
-l2            |    0.8344502    |    0.1204444    |    0.2560611   |
-roc.v2_ca05   |    0.0000000    |    0.6066482    |    0.0016260   |
+Accuracy      |    0.5686546    |    0.9137056    |    0.6823856   |
+l2            |    0.8344502    |    0.1221110    |    0.5758440   |
+roc.v2_ca05   |    0.0000000    |    0.6055556    |    0.0020325   |
 
 
 and the initial result of focus tracker (before implementation):
@@ -67,6 +70,17 @@ Accuracy      |    0.0097087    |    0.9365482    |    0.0000000   |
 l2            |    1.9805825    |    0.0922728    |    2.0000000   |
 roc.v2_ca05   |    0.0000000    |    0.0027100    |        -       |
 
+baseline
+    featured metrics
+--------------------------------------------------------------------
+              |   Joint Goals   |    Requested    |      Method    |
+--------------------------------------------------------------------
+Accuracy      |    0.7434119    |    0.9187817    |    0.5603329   |
+l2            |    0.4201508    |    0.1195567    |    0.6007789   |
+roc.v2_ca05   |    0.0000000    |    0.0027624    |    0.3762376   |
+
+
+baseline1
            |   Joint Goals   |    Requested    |      Method    |
 --------------------------------------------------------------------
 Accuracy      |    0.7434119    |    0.9213198    |    0.9029126   |
